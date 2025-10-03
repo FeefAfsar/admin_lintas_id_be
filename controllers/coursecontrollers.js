@@ -49,3 +49,37 @@ exports.deleteCourse = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// 4. FUNGSI UNTUK MENGUPDATE COURSE
+exports.updateCourse = async (req, res) => {
+    console.log('\n--- [BACKEND] FUNGSI updateCourse DIMULAI ---');
+    const allowedUpdates = ['title', 'description', 'category', 'wilayah', 'durasi', 'level', 'skills', 'videoUrl'];
+    const updates = Object.keys(req.body);
+
+    // Validate update fields
+    const isValidOperation = updates.every((u) => allowedUpdates.includes(u));
+    if (!isValidOperation) {
+        console.error('[BACKEND] Gagal Validasi: Ada field yang tidak diizinkan untuk diupdate.', updates);
+        return res.status(400).json({ success: false, message: 'Field tidak valid untuk diupdate.' });
+    }
+
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            console.error('[BACKEND] Course tidak ditemukan untuk id:', req.params.id);
+            return res.status(404).json({ success: false, message: 'Course tidak ditemukan' });
+        }
+
+        // Apply updates
+        updates.forEach((field) => {
+            course[field] = req.body[field];
+        });
+
+        const saved = await course.save();
+        console.log('[BACKEND] Course berhasil diupdate:', saved);
+        res.status(200).json({ success: true, data: saved });
+    } catch (error) {
+        console.error('[BACKEND] Error saat updateCourse:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
