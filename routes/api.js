@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import controllers
-const { createCourse, getAllCourses, deleteCourse } = require('../controllers/coursecontrollers');
+const { createCourse, getAllCourses, deleteCourse, updateCourse } = require('../controllers/coursecontrollers');
 const { addVideoToCourse } = require('../controllers/videocontrollers');
 // DIUBAH: Memanggil examController dan fungsi barunya
 const { addExamToCourse } = require('../controllers/examcontrollers');
@@ -12,6 +12,7 @@ const { addExamToCourse } = require('../controllers/examcontrollers');
 router.post('/courses', createCourse);
 router.get('/courses', getAllCourses);
 router.delete('/courses/:id', deleteCourse);
+router.put('/courses/:id', updateCourse);
 
 // --- Routes untuk Video (terkait dengan course) ---
 router.post('/courses/:courseId/videos', addVideoToCourse);
